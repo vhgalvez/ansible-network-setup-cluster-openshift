@@ -1,18 +1,18 @@
-# /etc/ansible/hosts
+# /etc/ansible/ansible-network-setup-cluster-openshift/hosts
 
 [kube_network_02]
-freeipa1 ansible_host=10.17.3.11
-load_balancer1 ansible_host=10.17.3.12
-postgresql1 ansible_host=10.17.3.13
+freeipa1 ansible_host=10.17.3.11 ansible_python_interpreter=/bin/bash
+load_balancer1 ansible_host=10.17.3.12 ansible_python_interpreter=/bin/bash
+postgresql1 ansible_host=10.17.3.13 ansible_python_interpreter=/bin/bash
 
 [kube_network_03]
-bootstrap1 ansible_host=10.17.4.20
-master1 ansible_host=10.17.4.21
-master2 ansible_host=10.17.4.22
-master3 ansible_host=10.17.4.23
-worker1 ansible_host=10.17.4.24
-worker2 ansible_host=10.17.4.25
-worker3 ansible_host=10.17.4.26
+bootstrap1 ansible_host=10.17.4.20 ansible_python_interpreter=/bin/bash
+master1 ansible_host=10.17.4.21 ansible_python_interpreter=/bin/bash
+master2 ansible_host=10.17.4.22 ansible_python_interpreter=/bin/bash
+master3 ansible_host=10.17.4.23 ansible_python_interpreter=/bin/bash
+worker1 ansible_host=10.17.4.24 ansible_python_interpreter=/bin/bash
+worker2 ansible_host=10.17.4.25 ansible_python_interpreter=/bin/bash
+worker3 ansible_host=10.17.4.26 ansible_python_interpreter=/bin/bash
 
 [all:vars]
 ansible_user=core

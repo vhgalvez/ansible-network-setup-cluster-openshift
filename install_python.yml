@@ -1,4 +1,3 @@
-# /etc/ansible/install_python.yml
 ---
 - name: Instalar Python en las máquinas virtuales
   hosts: all
@@ -6,9 +5,9 @@
   tasks:
     - name: Copiar script de instalación a las máquinas
       ansible.builtin.copy:
-        src: /etc/ansible/install_python.sh
+        src: /etc/ansible/ansible-network-setup-cluster-openshift/install_python.sh
         dest: /tmp/install_python.sh
-        mode: "0755"
+        mode: '0755'
 
     - name: Ejecutar script de instalación en las máquinas
       ansible.builtin.shell: /tmp/install_python.sh
