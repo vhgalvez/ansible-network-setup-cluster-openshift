@@ -153,3 +153,8 @@ sudo ansible-playbook -i /etc/ansible/hosts /etc/ansible/ansible-network-setup-c
 - **Si encuentras problemas de conectividad o permisos,** verifica los logs de Ansible y ajusta las configuraciones según sea necesario.
 
 Esta configuración de Ansible es más escalable y eficiente, ya que permite aplicar configuraciones en múltiples máquinas virtuales en paralelo, asegurando consistencia y ahorrando tiempo.
+
+
+sudo ansible-playbook -i /etc/ansible/hosts /etc/ansible/ansible-network-setup-cluster-openshift/install_python.yml -vvv
+
+sudo ansible-playbook -i /etc/ansible/ansible-network-setup-cluster-openshift/install_python.yml /etc/ansible/ansible-network-setup-cluster-openshift/install_python.yml -vvv
