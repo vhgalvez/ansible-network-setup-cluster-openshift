@@ -93,7 +93,7 @@ fi
 Ejecuta este playbook para instalar Python en todas las máquinas virtuales:
 
 ```bash
-sudo ansible-playbook -i /etc/ansible/hosts /etc/ansible/install_python.yml
+sudo ansible-playbook -i /etc/ansible/hosts /etc/ansible/ansible-network-setup-cluster-openshift/install_python.yml
 ```
 
 ## Paso 5: Crear el Playbook de Ansible para Configurar Rutas
@@ -136,7 +136,7 @@ Ejecuta el playbook con el siguiente comando desde el servidor ProLiant DL380 G7
 
 
 ```bash
-sudo ansible-playbook -i /etc/ansible/hosts /etc/ansible/configurar_rutas.yml
+sudo ansible-playbook -i /etc/ansible/hosts /etc/ansible/ansible-network-setup-cluster-openshift/configurar_rutas.yml
 ```
 
 ## Explicación
