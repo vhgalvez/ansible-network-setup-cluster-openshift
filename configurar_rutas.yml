@@ -18,9 +18,12 @@
         fi
       changed_when: false
 
+    - name: Configurar el intérprete de Python para Ansible
+      set_fact:
+        ansible_python_interpreter: /usr/bin/python3
+
     - name: Gather facts
       ansible.builtin.setup:
-        ansible_python_interpreter: /usr/bin/python3
 
     - name: Verificar si la ruta 192.168.0.0/24 ya existe
       shell: ip route show | grep -q '192.168.0.0/24'
