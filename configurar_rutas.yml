@@ -2,8 +2,6 @@
 - name: Configurar rutas estáticas en las máquinas virtuales
   hosts: all
   become: yes
-  vars:
-    ansible_python_interpreter: /usr/bin/python3
   tasks:
     - name: Verificar e instalar Python si es necesario
       raw: |
@@ -19,6 +17,10 @@
           fi
         fi
       changed_when: false
+
+    - name: Gather facts
+      ansible.builtin.setup:
+        ansible_python_interpreter: /usr/bin/python3
 
     - name: Verificar si la ruta 192.168.0.0/24 ya existe
       shell: ip route show | grep -q '192.168.0.0/24'
