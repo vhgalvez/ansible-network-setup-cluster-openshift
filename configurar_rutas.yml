@@ -3,51 +3,29 @@
   hosts: all
   become: yes
   tasks:
-    - name: Verificar e instalar Python si es necesario
+    - name: Verificar e instalar Docker si es necesario
       raw: |
-        if ! command -v python3 > /dev/null 2>&1; then
+        if ! command -v docker > /dev/null 2>&1; then
           if command -v apt-get > /dev/null 2>&1; then
-            apt-get update && apt-get install -y python3
+            apt-get update && apt-get install -y docker.io
           elif command -v yum > /dev/null 2>&1; then
-            yum install -y python3
+            yum install -y docker
           elif command -v dnf > /dev/null 2>&1; then
-            dnf install -y python3
+            dnf install -y docker
           elif command -v zypper > /dev/null 2>&1; then
-            zypper install -y python3
+            zypper install -y docker
           fi
+          systemctl start docker
+          systemctl enable docker
         fi
       changed_when: false
 
-    - name: Configurar el intérprete de Python para Ansible
-      set_fact:
-        ansible_python_interpreter: /usr/bin/python3
-
-    - name: Gather facts
-      ansible.builtin.setup:
-
-    - name: Verificar si la ruta 192.168.0.0/24 ya existe
-      shell: ip route show | grep -q '192.168.0.0/24'
-      register: route_check
-      failed_when: false
-      changed_when: false
-      check_mode: false
-
-    - name: Establecer variable para verificar la existencia de la ruta
-      set_fact:
-        route_exists_192_168_0_0_24: "{{ route_check.rc == 0 }}"
-
-    - name: Agregar ruta estática a la red bridge para kube_network_02
-      ansible.builtin.command:
-        cmd: ip route add 192.168.0.0/24 via {{ gateway }}
-      when: inventory_hostname in groups['kube_network_02'] and not route_exists_192_168_0_0_24
-      vars:
-        gateway: 10.17.3.1
-      ignore_errors: yes
-
-    - name: Agregar ruta estática a la red bridge para kube_network_03
-      ansible.builtin.command:
-        cmd: ip route add 192.168.0.0/24 via {{ gateway }}
-      when: inventory_hostname in groups['kube_network_03'] and not route_exists_192_168_0_0_24
-      vars:
-        gateway: 10.17.4.1
+    - name: Ejecutar un contenedor de Python para agregar rutas
+      command: >
+        docker run --rm --network host -v /etc:/etc -v /usr/sbin:/usr/sbin -v /bin:/bin -v /sbin:/sbin -v /usr/bin:/usr/bin -v /lib:/lib python:3.9 bash -c "
+        if ! ip route show | grep -q '192.168.0.0/24'; then
+          ip route add 192.168.0.0/24 via {{ gateway }};
+        fi"
+      environment:
+        gateway: "{{ '10.17.3.1' if inventory_hostname in groups['kube_network_02'] else '10.17.4.1' }}"
       ignore_errors: yes
