@@ -1,4 +1,3 @@
-# /etc/ansible/configurar_rutas.yml
 ---
 - name: Configurar rutas estáticas en las máquinas virtuales
   hosts: all
@@ -6,18 +5,46 @@
   vars:
     ansible_python_interpreter: /usr/bin/python3
   tasks:
+    - name: Verificar e instalar Python si es necesario
+      raw: |
+        if ! command -v python3 > /dev/null 2>&1; then
+          if command -v apt-get > /dev/null 2>&1; then
+            apt-get update && apt-get install -y python3
+          elif command -v yum > /dev/null 2>&1; then
+            yum install -y python3
+          elif command -v dnf > /dev/null 2>&1; then
+            dnf install -y python3
+          elif command -v zypper > /dev/null 2>&1; then
+            zypper install -y python3
+          fi
+        fi
+      changed_when: false
+
     - name: Agregar ruta estática a la red bridge para kube_network_02
       ansible.builtin.command:
         cmd: ip route add 192.168.0.0/24 via {{ gateway }}
-      when: inventory_hostname in groups['kube_network_02']
+      when: inventory_hostname in groups['kube_network_02'] and not route_exists_192_168_0_0_24
       vars:
         gateway: 10.17.3.1
-      ignore_errors: yes
+      register: result
+      failed_when: result.rc not in [0, 2] # Ignorar error si la ruta ya existe
+      changed_when: result.rc == 0
+
+    - name: Verificar si la ruta 192.168.0.0/24 ya existe
+      shell: ip route show | grep -q '192.168.0.0/24'
+      register: route_check
+      failed_when: false
+      changed_when: false
+      check_mode: false
+      vars:
+        route_exists_192_168_0_0_24: "{{ route_check.rc == 0 }}"
 
     - name: Agregar ruta estática a la red bridge para kube_network_03
       ansible.builtin.command:
         cmd: ip route add 192.168.0.0/24 via {{ gateway }}
-      when: inventory_hostname in groups['kube_network_03']
+      when: inventory_hostname in groups['kube_network_03'] and not route_exists_192_168_0_0_24
       vars:
         gateway: 10.17.4.1
-      ignore_errors: yes
+      register: result
+      failed_when: result.rc not in [0, 2] # Ignorar error si la ruta ya existe
+      changed_when: result.rc == 0
