@@ -158,3 +158,9 @@ Esta configuración de Ansible es más escalable y eficiente, ya que permite apl
 sudo ansible-playbook -i /etc/ansible/hosts /etc/ansible/ansible-network-setup-cluster-openshift/install_python.yml -vvv
 
 sudo ansible-playbook -i /etc/ansible/ansible-network-setup-cluster-openshift/install_python.yml /etc/ansible/ansible-network-setup-cluster-openshift/install_python.yml -vvv
+
+
+
+sudo systemctl daemon-reload
+sudo systemctl enable iptables-restore.service
+sudo systemctl start iptables-restore.service
